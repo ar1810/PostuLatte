@@ -1,7 +1,7 @@
 # ADR 0002: Gestión de Configuración mediante YAML y Pydantic
 
 ## Estado
-Propuesto
+Aceptado
 
 ## Contexto
 El proyecto requiere leer múltiples parámetros de configuración que gobernarán el comportamiento de la aplicación, tales como credenciales de proveedores de IA, niveles de logging y variables de entorno globales. Necesitamos un sistema que sea:
@@ -18,6 +18,17 @@ La lectura se centralizará en `src/core/config.py`, exponiendo un objeto `confi
 * **Legibilidad:** YAML permite anidación clara y comentarios, ideal para estructurar perfiles de modelos de lenguaje (prompts, temperaturas, tokens).
 * **Seguridad (Pydantic v2):** Garantiza que si falta un parámetro obligatorio o el tipo de dato es incorrecto (ej. una temperatura que debería ser *float* viene como *string*), la aplicación falle inmediatamente al arrancar y no en medio de un flujo crítico de IA.
 * **Autocompletado:** Al mapear el YAML a clases de Pydantic, el IDE nos ofrecerá autocompletado nativo en todo el proyecto (`config.providers['openai'].model`).
+
+## Alternativas consideradas
+
+### JSON
+Descartado por ser menos legible para configuraciones complejas y no permitir comentarios.
+
+### Variables de entorno únicamente
+Descartado porque dificultan la configuración de múltiples proveedores de IA y parámetros complejos.
+
+### TOML
+Considerado, pero YAML ofrece una sintaxis más cómoda para configuraciones jerárquicas y ya cuenta con un amplio ecosistema en Python.
 
 ## Consecuencias
 * Se agregan `pyyaml` y `pydantic` como dependencias obligatorias del proyecto.
