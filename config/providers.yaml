@@ -4,7 +4,7 @@ default_provider: "ollama"
 ollama:
   api_key_env: "NOT_REQUIRED"
   base_url: "http://localhost:11434"
-  model: "llama3:8b"           # O el modelo local que prefieras (mistral, phi3, etc.)
+  model: "llama3"           # O el modelo local que prefieras (mistral, phi3, etc.)
   temperature: 0.2
   max_tokens: 2000
 
