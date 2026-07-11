@@ -38,3 +38,27 @@ Esto permite utilizar inteligencia artificial sin depender obligatoriamente de s
 Aunque el uso de modelos locales requiere cierto hardware, el proyecto busca ser compatible con la mayor cantidad posible de equipos y ofrecer una experiencia flexible: ejecutarse en segundo plano mientras el usuario continúa trabajando, estudiando o disfrutando de su tiempo libre.
 
 La filosofía del proyecto es clara: hacer que la inteligencia artificial sea una herramienta accesible para cualquier persona, independientemente de su capacidad económica o de las plataformas a las que tenga acceso.
+
+---
+
+## Filosofía de interacción
+
+PostuLatte no requiere que el usuario construya manualmente un perfil profesional desde cero.
+
+La aplicación parte de información existente del usuario, principalmente su CV, y utiliza IA para transformarla en un perfil estructurado.
+
+El objetivo es reducir la fricción inicial:
+
+Antes:
+
+Usuario completa múltiples formularios
+↓
+Perfil profesional
+
+Después:
+
+Usuario importa su CV
+↓
+PostuLatte genera un perfil inicial
+↓
+Usuario valida y mejora la información

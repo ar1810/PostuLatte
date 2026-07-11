@@ -1,5 +1,17 @@
 # Roadmap del Proyecto
 
+Prioridad Alta
+
+? Importar PDF
+
+? Importar DOCX
+
+? Extraer CandidateProfile
+
+? Revisar datos
+
+? Guardar profile.yaml
+
 ## ?? Estado Actual
 El proyecto cuenta con una arquitectura base s¨®lida e higienizada, dise?ada bajo principios de arquitectura limpia/DDD, lista para desarrollo local sin acoplamiento a bases de datos.
 
