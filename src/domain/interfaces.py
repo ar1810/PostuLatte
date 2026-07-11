@@ -20,3 +20,20 @@ class JobFinderService(ABC):
     @abstractmethod
     def search_offers(self, target_roles: List[str], location: Optional[str] = None) -> List[JobOffer]:
         pass
+
+
+class CVExtractorService(ABC):
+    """Interfaz obligatoria para los extractores técnicos de documentos (PDF, DOCX, etc.)."""
+    
+    @abstractmethod
+    def extract_text(self, file_path: str) -> str:
+        """
+        Lee un archivo desde el disco y extrae su contenido de texto bruto.
+        
+        Args:
+            file_path (str): Ruta al archivo original (ej: 'profiles/user/original/resume.pdf').
+            
+        Returns:
+            str: El texto crudo extraído listo para ser procesado por la IA.
+        """
+        pass
