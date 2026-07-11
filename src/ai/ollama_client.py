@@ -1,7 +1,13 @@
 # src/ai/ollama_client.py
 import json
 from typing import List
-import ollama
+
+# Intentamos importar ollama de forma segura. Si no está instalado, guardamos None.
+try:
+    import ollama
+except ImportError:
+    ollama = None
+
 from src.domain.interfaces import AIService
 from src.domain.entities import CandidateProfile, JobOffer, MatchResult
 from src.core.config import config
@@ -10,6 +16,14 @@ class OllamaAIService(AIService):
     """Implementación concreta de la IA utilizando Ollama corriendo en local."""
 
     def __init__(self):
+        # Si el usuario intenta inicializar este servicio pero no instaló la librería:
+        if ollama is None:
+            raise RuntimeError(
+                "❌ Error: La librería 'ollama' no está instalada.\n"
+                "Por favor, ejecutá el instalador interactivo: python install.py "
+                "y seleccioná la opción [1] Local."
+            )
+            
         self.model_name = config.active_ai.model       
         self.temperature = config.active_ai.temperature 
         self.client = ollama.Client(host=config.active_ai.base_url)
