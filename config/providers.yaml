@@ -1,0 +1,22 @@
+# Modelo por defecto (Local)
+default_provider: "ollama"
+
+ollama:
+  api_key_env: "NOT_REQUIRED"
+  base_url: "http://localhost:11434"
+  model: "llama3:8b"           # O el modelo local que prefieras (mistral, phi3, etc.)
+  temperature: 0.2
+  max_tokens: 2000
+
+# Modelos en la nube (Opcionales)
+openai:
+  api_key_env: "OPENAI_API_KEY"
+  model: "gpt-4o"
+  temperature: 0.3
+  max_tokens: 2500
+
+anthropic:
+  api_key_env: "ANTHROPIC_API_KEY"
+  model: "claude-3-5-sonnet"
+  temperature: 0.2
+  max_tokens: 3000

@@ -1,0 +1,8 @@
+app_name: "PostuLatte"
+version: "0.0.1"
+environment: "development"
+
+search:
+  min_match_score: 75
+  max_results_per_search: 20
+  search_frequency_hours: 12
