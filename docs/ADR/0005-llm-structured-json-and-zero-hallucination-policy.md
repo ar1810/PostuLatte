@@ -1,7 +1,7 @@
 # ADR 0005: Formato JSON Estricto en LLM y Política de Cero Invención de Datos
 
 ## Estado
-Propuesto
+Aceptado
 
 ## Contexto
 El texto bruto extraído de un currículum por el módulo de infraestructura (Sprint 4) carece de estructura. Para poblar de forma automatizada nuestro núcleo del dominio (`CandidateProfile`), requerimos que el LLM local (`llama3` a través de Ollama) interprete semánticamente el texto y lo convierta a una estructura de datos procesable por Python.

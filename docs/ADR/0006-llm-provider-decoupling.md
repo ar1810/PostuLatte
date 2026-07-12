@@ -1,7 +1,7 @@
 # ADR 0006 Desacoplamiento Total del Proveedor de IA respecto al Dominio
 
 ## Estado
-Propuesto
+Aceptado
 
 ## Contexto
 Actualmente, PostuLatte utiliza Ollama de forma local por defecto para resolver las tareas de asistencia e interpretación (consolidado en el Sprint 3). Al implementar el pipeline de estructuración del `CandidateProfile` en este Sprint, surge la necesidad técnica de invocar servicios de IA desde diferentes puntos de la aplicación.

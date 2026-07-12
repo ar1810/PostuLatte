@@ -1,7 +1,7 @@
 # ADR 0004: CandidateProfile como Núcleo Central Desacoplado del Dominio
 
 ## Estado
-Propuesto
+Aceptado
 
 ## Contexto
 En el Sprint 4 consolidamos la capacidad técnica de extraer texto bruto desde archivos PDF y DOCX. Al ingresar al Sprint 5, nos enfrentamos al desafío de diseñar cómo consumirán la información los módulos subsiguientes (Buscador de Ofertas, Motor ATS, Generador de CVs). 
