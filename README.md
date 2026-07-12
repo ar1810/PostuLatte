@@ -1,6 +1,6 @@
 # PostuLatte
 
-> Versión actual: **v0.4.0**
+> Versión actual: **v0.5.0**
 
 > **Automatizá las tareas repetitivas de tu búsqueda laboral. Vos seguís tomando las decisiones.**
 
@@ -112,7 +112,7 @@ La prioridad del proyecto es ofrecer una excelente experiencia utilizando modelo
 
 # Estado del proyecto
 
-**Versión actual:** `v0.4.0`
+**Versión actual:** `v0.5.0`
 
 🚧 **En desarrollo activo.**
 
@@ -148,21 +148,29 @@ Por el momento se requiere:
 
 # Roadmap
 
-## v0.1
+## v0.1 a v0.5 (Hitos Alcanzados)
 
-* [x] Arquitectura inicial
-* [x] Configuración centralizada
-* [x] Integración con Ollama
-* [x] Primer análisis ATS mediante IA
+* [x] Arquitectura inicial y división en capas.
+
+* [x] Configuración centralizada mapeada con Pydantic V2.
+
+* [x] Integración hermética con Ollama y contratos de desacoplamiento.
+
+* [x] Extractor físico polimórfico (PDF/DOCX).
+
+* [x] Pipeline definitivo de orquestación y mapeo semántico hacia CandidateProfile.
 
 ## Próximas versiones
 
-* [ ] Motor de generación de CV
-* [ ] Cartas de presentación
-* [ ] Historial de postulaciones
-* [ ] Exportación a PDF
-* [ ] Integración con múltiples proveedores
-* [ ] Automatización de búsqueda laboral
+* [ ] Motor de búsqueda e ingesta de ofertas (JobOffer).
+
+* [ ] Sistema de matching y análisis ATS.
+
+* [ ] Motor de generación de CV.
+
+* [ ] Cartas de presentación adaptativas.
+
+* [ ] Historial de postulaciones y exportación a PDF.
 
 ---
 

@@ -9,148 +9,61 @@ El proyecto sigue los principios de **Arquitectura Limpia (Clean Architecture)**
 # Principios arquitectónicos
 
 La arquitectura se basa en cuatro principios fundamentales:
-
-- El dominio contiene únicamente reglas de negocio.
-- La infraestructura implementa servicios externos sin afectar al dominio.
-- La aplicación orquesta los casos de uso utilizando el dominio.
-- Las dependencias siempre apuntan hacia el dominio.
+- El dominio contiene únicamente reglas de negocio puras.
+- La infraestructura implementa servicios externos sin contaminar el dominio.
+- La capa de aplicación/core orquesta los casos de uso utilizando el dominio.
+- Las dependencias siempre apuntan hacia adentro (hacia el dominio).
 
 ---
 
 # Arquitectura en capas
 
-```
 CLI / GUI
-     │
-     ▼
-Application
-     │
-     ▼
-Domain
-     ▲
-     │
-Infrastructure
-```
+│
+▼
+src/core (Application)
+│
+▼
+src/domain (Entities / Interfaces)
+▲
+│
+src/infrastructure (AI / Extraction / Config)
 
-Las capas externas pueden depender de las internas.
-
-Las capas internas nunca conocen detalles de implementación externos.
+* Las capas externas pueden depender de las internas.
+* Las capas internas nunca conocen detalles de implementación de las capas externas.
 
 ---
 
-# Responsabilidades
+# Responsabilidades de Componentes Clave
 
-## Domain
+## src/domain
+Representa el corazón inmutable de PostuLatte.
+- **`entities.py`:** Contiene los modelos base (`CandidateProfile`, `PersonalInfo`, `SkillsInventory`, etc.) validados rígidamente mediante Pydantic V2.
+- **`interfaces.py`:** Define los contratos y abstracciones puras (`AIService`) que el dominio exige para operar, completamente desacoplado de proveedores específicos.
 
-Representa el corazón del proyecto.
+## src/core (Application)
+- **`application.py` (`ProfileExtractionPipeline`):** Actúa como el orquestador de casos de uso. Coordina la fábrica de extracción física para obtener texto de los archivos, despacha el procesamiento semántico a la infraestructura de IA inyectada y retorna el perfil de dominio construido.
 
-Contiene:
-
-- Modelos del dominio
-- Value Objects
-- Interfaces (Contratos)
-- Reglas de negocio
-
-El dominio nunca conoce:
-
-- Ollama
-- OpenAI
-- Archivos
-- YAML
-- CLI
-- GUI
+## src/infrastructure
+Implementa la comunicación directa con tecnologías de terceros y el sistema operativo.
+- **`src/extraction/`:** Aloja los lectores físicos independientes (`PDFExtractor`, `DocxExtractor`) junto a su `ExtractorFactory`.
+- **`src/ai/`:** Contiene el cliente específico de infraestructura `OllamaAIService` que interactúa con la API de Ollama (forzando `format="json"` y `temperature=0.0`) y el `PromptBuilder` que formatea las directivas rígidas del sistema.
 
 ---
 
-## Application
+# Flujo Principal de Ingesta (Sprint 5)
 
-Implementa los casos de uso.
+El flujo secuencial de la información se ejecuta de la siguiente manera de principio a fin:
 
-Ejemplos:
+[Archivo Físico .pdf/.docx]
+│
+▼ (ExtractorFactory)
+[Texto Bruto Extraído]
+│
+▼ (PromptBuilder + AIService)
+[JSON Estructurado desde Ollama]
+│
+▼ (Pydantic Validation)
+[CandidateProfile (Entidad de Dominio)]
 
-- Importar CV
-- Analizar ofertas
-- Generar CV
-- Generar carta
-- Preparar entrevista
-
-La capa Application coordina los servicios necesarios para completar una tarea, pero no contiene reglas de negocio complejas.
-
----
-
-## Infrastructure
-
-Implementa la comunicación con el mundo exterior.
-
-Incluye:
-
-- Proveedores LLM
-- Lectores PDF
-- Lectores DOCX
-- Configuración
-- Persistencia
-- Logging
-
-Toda dependencia externa permanece confinada a esta capa.
-
----
-
-# Flujo principal
-
-La información fluye de la siguiente manera:
-
-```
-Documento
-
-↓
-
-Extractor
-
-↓
-
-Texto
-
-↓
-
-PromptBuilder
-
-↓
-
-Proveedor LLM
-
-↓
-
-JSON
-
-↓
-
-CandidateProfile
-
-↓
-
-Casos de uso
-```
-
-Una vez generado el `CandidateProfile`, el documento original deja de ser necesario para el funcionamiento normal del sistema.
-
-Todas las funcionalidades posteriores trabajan sobre el modelo del dominio.
-
----
-
-# Modelo de dominio
-
-El modelo `CandidateProfile` constituye el núcleo de PostuLatte.
-
-Representa una fotografía estructurada del perfil profesional del usuario obtenida a partir de la documentación importada.
-
-Las funcionalidades futuras reutilizan este modelo para evitar reprocesar continuamente los documentos originales.
-
----
-
-# Independencia de proveedores
-
-El dominio nunca conoce el proveedor de IA utilizado.
-
-Actualmente el proveedor por defecto es Ollama, pero la arquitectura permite incorporar nuevos proveedores sin modificar las reglas de negocio.
-
-La comunicación con cualquier modelo de lenguaje se realiza mediante interfaces definidas por el dominio e implementadas por la infraestructura.
+Una vez generado el `CandidateProfile`, el documento original deja de ser necesario para el funcionamiento del sistema. Todas las capacidades posteriores (búsqueda, matching, generación) operan de manera exclusiva sobre este modelo unificado del dominio.
