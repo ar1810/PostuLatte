@@ -1,41 +1,156 @@
-# Roadmap del Proyecto
+# Roadmap de PostuLatte
 
-Prioridad Alta
-
-? Importar PDF
-
-? Importar DOCX
-
-? Extraer CandidateProfile
-
-? Revisar datos
-
-? Guardar profile.yaml
-
-## ?? Estado Actual
-El proyecto cuenta con una arquitectura base s車lida e higienizada, dise?ada bajo principios de arquitectura limpia/DDD, lista para desarrollo local sin acoplamiento a bases de datos.
-
-## ?? Hitos Alcanzados
-
-### Hito 1: Cimientos y Sanitizaci車n del Entorno (Completado - Julio 2026)
-*   **Estructura de Directorios:** Dise?ada e implementada la arquitectura de carpetas completa.
-*   **Higiene del Repositorio:** Configuraci車n estricta de `.gitignore` para prevenir fugas de bases de datos locales (`*.db`), perfiles personales (`data/profiles/*`) y entornos virtuales.
-*   **Estandarizaci車n de Entorno:** Implementaci車n de `.gitattributes` para forzar finales de l赤nea `LF` (`eol=lf`), garantizando compatibilidad multiplataforma.
-*   **Documentaci車n Inicial:** Creaci車n de `architecture.md`, `roadmap.md` y los registros ADR 0001 y 0002.
+Este documento describe la evolucion prevista del proyecto y el estado de cada sprint hasta la version 1.0.
 
 ---
 
-## ?? Pr車ximos Pasos (En Desarrollo)
+# Estado actual
 
-### Hito 2: Capa Central y Gesti車n de Configuraci車n ?
-*   [ ] Definir e implementar `src/core/config.py` utilizando `PyYAML` y `Pydantic`.
-*   [ ] Crear archivos de configuraci車n base (`settings.yaml`, `providers.yaml`, `logging.yaml`).
-*   [ ] Configurar el sistema de logs centralizado en `config/logging.yaml`.
+Version objetivo: **v1.0**
 
-### Hito 3: Automatizaci車n de B迆squeda y Modelado del Dominio
-*   [ ] Definir entidades en `src/domain/` (`JobOffer`, `CandidateProfile`, `MatchResult`).
-*   [ ] Dise?ar e implementar la l車gica de extracci車n/b迆squeda autom芍tica de ofertas dentro de `src/workflow/analyze_job.py` o utilidades.
+Sprint actual: **Sprint 5 — Pipeline CV → CandidateProfile**
 
-### Hito 4: Motor de Matching e Integraci車n de IA
-*   [ ] Dise?ar los prompts estructurados en `data/prompts/` para el an芍lisis de compatibilidad (Scoring de 0 a 100% frente a filtros ATS).
-*   [ ] Conectar el flujo con los modelos de lenguaje en `src/ai/`.
+Estado del proyecto:
+
+- ? Arquitectura base
+- ? Configuracion mediante YAML
+- ? Integracion con Ollama
+- ? Extraccion de documentos (PDF/DOCX)
+- ?? Modelado del dominio del candidato
+
+---
+
+# Roadmap
+
+| Sprint | Estado | Objetivo |
+|---------|--------|----------|
+| Sprint 1 | ? | Arquitectura base |
+| Sprint 2 | ? | Sistema de configuracion |
+| Sprint 3 | ? | Integracion con Ollama |
+| Sprint 4 | ? | Extraccion de documentos |
+| Sprint 5 | ?? | Pipeline CV → CandidateProfile |
+| Sprint 6 | ? | Buscador de ofertas |
+| Sprint 7 | ? | Motor ATS |
+| Sprint 8 | ? | Generador de CV |
+| Sprint 9 | ? | Generador de cartas |
+| Sprint 10 | ? | CLI completa |
+| Sprint 11 | ? | Interfaz grafica |
+| Sprint 12 | ? | Release v1.0 |
+
+---
+
+# Objetivos de cada Sprint
+
+## Sprint 1 — Arquitectura base ?
+
+- Definicion de la arquitectura del proyecto.
+- Organizacion del repositorio.
+- Configuracion inicial de Git.
+- Documentacion base.
+- ADR iniciales.
+
+---
+
+## Sprint 2 — Configuracion ?
+
+- Sistema de configuracion basado en YAML.
+- Validacion mediante Pydantic.
+- Carga centralizada de configuracion.
+
+---
+
+## Sprint 3 — Integracion Ollama ?
+
+- Cliente para Ollama.
+- Abstraccion del proveedor LLM.
+- Configuracion del proveedor por defecto.
+
+---
+
+## Sprint 4 — Extraccion de documentos ?
+
+- Lectura de archivos PDF.
+- Lectura de archivos DOCX.
+- API unificada de extraccion.
+- Tests unitarios.
+
+---
+
+## Sprint 5 — Pipeline CV → CandidateProfile ??
+
+Objetivos:
+
+- Definir el modelo `CandidateProfile`.
+- Disenar el PromptBuilder.
+- Implementar el parser estructurado.
+- Validar respuestas mediante Pydantic.
+- Crear los tests correspondientes.
+
+---
+
+## Sprint 6 — Buscador de ofertas ?
+
+Objetivos previstos:
+
+- Modelo `JobOffer`.
+- Integracion con buscadores.
+- Importacion de ofertas.
+- Normalizacion de datos.
+
+---
+
+## Sprint 7 — Motor ATS ?
+
+Objetivos previstos:
+
+- Matching entre perfil y ofertas.
+- Sistema de puntuacion.
+- Explicacion del resultado.
+
+---
+
+## Sprint 8 — Generador de CV ?
+
+Objetivos previstos:
+
+- Adaptacion automatica del CV.
+- Multiples plantillas.
+- Exportacion.
+
+---
+
+## Sprint 9 — Generador de cartas ?
+
+Objetivos previstos:
+
+- Generacion personalizada.
+- Adaptacion a cada oferta.
+
+---
+
+## Sprint 10 — CLI completa ?
+
+Objetivos previstos:
+
+- Experiencia completa desde terminal.
+- Automatizacion de flujos.
+
+---
+
+## Sprint 11 — Interfaz grafica ?
+
+Objetivos previstos:
+
+- Aplicacion de escritorio.
+- Gestion visual de perfiles y ofertas.
+
+---
+
+## Sprint 12 — Release v1.0 ?
+
+Objetivos previstos:
+
+- Estabilizacion.
+- Optimizacion.
+- Documentacion final.
+- Publicacion oficial.

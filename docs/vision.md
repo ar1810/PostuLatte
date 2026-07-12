@@ -1,5 +1,8 @@
 # Visión de PostuLatte
+
 La IA nunca reemplaza al usuario; elimina el trabajo repetitivo para que el usuario pueda dedicar su tiempo a lo que realmente importa.
+
+---
 
 ## ¿Qué problema resuelve?
 
@@ -45,20 +48,38 @@ La filosofía del proyecto es clara: hacer que la inteligencia artificial sea un
 
 PostuLatte no requiere que el usuario construya manualmente un perfil profesional desde cero.
 
-La aplicación parte de información existente del usuario, principalmente su CV, y utiliza IA para transformarla en un perfil estructurado.
+La aplicación parte de la información existente del usuario —principalmente su CV— y utiliza IA para transformarla en un modelo estructurado del dominio.
 
-El objetivo es reducir la fricción inicial:
+El objetivo es reducir la fricción inicial.
 
 Antes:
 
 Usuario completa múltiples formularios
+
 ↓
+
 Perfil profesional
 
 Después:
 
 Usuario importa su CV
+
 ↓
+
 PostuLatte genera un perfil inicial
+
 ↓
+
 Usuario valida y mejora la información
+
+---
+
+## Filosofía del conocimiento
+
+PostuLatte trabaja sobre información estructurada, no sobre documentos sin procesar.
+
+Una vez importado un documento, la información relevante se transforma en un modelo del dominio denominado `CandidateProfile`. Ese modelo representa el perfil profesional del usuario y se convierte en la fuente de información para todas las funcionalidades posteriores.
+
+Esto permite que la extracción del documento ocurra una única vez. A partir de ese momento, el análisis de ofertas, el cálculo de compatibilidad, la generación de CVs y la creación de cartas de presentación reutilizan el mismo modelo consistente y validado.
+
+Separar la extracción de información de la lógica de negocio simplifica el mantenimiento del proyecto, mejora la trazabilidad y evita procesar repetidamente los mismos documentos.

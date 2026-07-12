@@ -1,56 +1,156 @@
 # Arquitectura del Sistema
 
-Este documento describe la estructura arquitectónica, el flujo de datos y los principios de diseño de la aplicación. El sistema está diseñado bajo los principios de **Arquitectura Limpia (Clean Architecture)** y **Diseño Guiado por el Dominio (DDD)**.
+Este documento describe la arquitectura de PostuLatte, las responsabilidades de cada capa y el flujo general de información dentro de la aplicación.
+
+El proyecto sigue los principios de **Arquitectura Limpia (Clean Architecture)** y **Diseño Guiado por el Dominio (DDD)**.
 
 ---
 
-## 🏛️ Vista General de las Capas
+# Principios arquitectónicos
 
-El código fuente dentro de `src/` se organiza en capas concéntricas. La regla fundamental es que **las capas externas pueden depender de las internas, pero las internas NUNCA deben conocer nada de las externas**.
+La arquitectura se basa en cuatro principios fundamentales:
 
-[ Capa Externa: CLI / run.py ]
-             │
-             ▼
-[ Capa de Automatización y Flujos ] ──► src/workflow/ (analyze_job.py, etc.)
-             │
-             ▼
-[ Capa de Núcleo y Utilidades ]     ──► src/core/ y src/utils/
-             │
-             ▼
-[ Capa del Dominio (Core Puro) ]    ──► src/domain/ (Modelos e Interfaces)
+- El dominio contiene únicamente reglas de negocio.
+- La infraestructura implementa servicios externos sin afectar al dominio.
+- La aplicación orquesta los casos de uso utilizando el dominio.
+- Las dependencias siempre apuntan hacia el dominio.
 
 ---
 
-## 📂 Responsabilidades por Carpeta
+# Arquitectura en capas
 
-### 1. Dominio (`src/domain/`)
-Es el corazón de la aplicación. Contiene las reglas de negocio puras. No tiene dependencias de librerías externas de IA o frameworks de scraping.
-*   **Modelos/Entidades:** Clases puras de Python que representan los conceptos del negocio (ej: `JobOffer`, `CandidateProfile`, `MatchResult`).
-*   **Interfaces (Contratos):** Clases abstractas (`ABC`) que definen qué acciones se pueden hacer pero sin decir cómo (ej: `class AIService(ABC)`, `class JobFinderService(ABC)`).
+```
+CLI / GUI
+     │
+     ▼
+Application
+     │
+     ▼
+Domain
+     ▲
+     │
+Infrastructure
+```
 
-### 2. Flujos de Trabajo (`src/workflow/`)
-Representa los **Casos de Uso** de la aplicación. Orquesta la lógica del negocio interactuando con las interfaces del dominio para automatizar las tareas.
-*   `analyze_job.py`: Orquesta la búsqueda automática de ofertas, la ingesta de datos y el análisis de compatibilidad (Matching).
-*   `generate_resume.py` y `generate_cover_letter.py`: Adaptan el perfil a las ofertas seleccionadas.
-*   `prepare_interview.py`: Genera guías de preparación basadas en la oferta elegida.
+Las capas externas pueden depender de las internas.
 
-### 3. Inteligencia Artificial (`src/ai/`)
-Contiene las implementaciones técnicas y adaptadores del mundo exterior para los Modelos de Lenguaje (LLMs). Aquí se traduce la lógica del negocio a llamadas de API (OpenAI, Anthropic, etc.).
-
-### 4. Núcleo (`src/core/`)
-Funcionalidades transversales necesarias para que la aplicación arranque y funcione de manera estable.
-*   `config.py`: Carga y validación estricta de archivos YAML (`settings.yaml`, `providers.yaml`, `logging.yaml`).
-*   `exceptions.py`: Centralización de errores personalizados del sistema.
-*   `application.py`: Inicializador del contexto de la aplicación.
+Las capas internas nunca conocen detalles de implementación externos.
 
 ---
 
-## 🔄 Flujo de Datos Típico (Búsqueda y Filtrado Automático)
+# Responsabilidades
 
-1. El usuario ejecuta la aplicación desde la raíz mediante `python run.py`.
-2. El **`src/cli/`** captura los parámetros y dispara el flujo `AnalyzeJobWorkflow`.
-3. El workflow toma el perfil del usuario desde `data/profiles/example_profile.yaml`.
-4. El sistema busca de forma automatizada nuevas propuestas en los portales configurados.
-5. Las ofertas encontradas se convierten en entidades del dominio (`JobOffer`).
-6. El workflow pasa el perfil del usuario y las ofertas al módulo de IA (`src/ai/`) para realizar un análisis de compatibilidad (Matching Score) basado en las palabras clave del ATS (`data/knowledge/ats_keywords.md`).
-7. Las propuestas con mayor compatibilidad se almacenan en `data/output/` y quedan listas para la fase de postulación o generación de CV/carta de presentación.
+## Domain
+
+Representa el corazón del proyecto.
+
+Contiene:
+
+- Modelos del dominio
+- Value Objects
+- Interfaces (Contratos)
+- Reglas de negocio
+
+El dominio nunca conoce:
+
+- Ollama
+- OpenAI
+- Archivos
+- YAML
+- CLI
+- GUI
+
+---
+
+## Application
+
+Implementa los casos de uso.
+
+Ejemplos:
+
+- Importar CV
+- Analizar ofertas
+- Generar CV
+- Generar carta
+- Preparar entrevista
+
+La capa Application coordina los servicios necesarios para completar una tarea, pero no contiene reglas de negocio complejas.
+
+---
+
+## Infrastructure
+
+Implementa la comunicación con el mundo exterior.
+
+Incluye:
+
+- Proveedores LLM
+- Lectores PDF
+- Lectores DOCX
+- Configuración
+- Persistencia
+- Logging
+
+Toda dependencia externa permanece confinada a esta capa.
+
+---
+
+# Flujo principal
+
+La información fluye de la siguiente manera:
+
+```
+Documento
+
+↓
+
+Extractor
+
+↓
+
+Texto
+
+↓
+
+PromptBuilder
+
+↓
+
+Proveedor LLM
+
+↓
+
+JSON
+
+↓
+
+CandidateProfile
+
+↓
+
+Casos de uso
+```
+
+Una vez generado el `CandidateProfile`, el documento original deja de ser necesario para el funcionamiento normal del sistema.
+
+Todas las funcionalidades posteriores trabajan sobre el modelo del dominio.
+
+---
+
+# Modelo de dominio
+
+El modelo `CandidateProfile` constituye el núcleo de PostuLatte.
+
+Representa una fotografía estructurada del perfil profesional del usuario obtenida a partir de la documentación importada.
+
+Las funcionalidades futuras reutilizan este modelo para evitar reprocesar continuamente los documentos originales.
+
+---
+
+# Independencia de proveedores
+
+El dominio nunca conoce el proveedor de IA utilizado.
+
+Actualmente el proveedor por defecto es Ollama, pero la arquitectura permite incorporar nuevos proveedores sin modificar las reglas de negocio.
+
+La comunicación con cualquier modelo de lenguaje se realiza mediante interfaces definidas por el dominio e implementadas por la infraestructura.
