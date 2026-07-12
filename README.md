@@ -1,4 +1,6 @@
-# ☕ PostuLatte
+# PostuLatte
+
+> Versión actual: **v0.4.0**
 
 > **Automatizá las tareas repetitivas de tu búsqueda laboral. Vos seguís tomando las decisiones.**
 
@@ -110,13 +112,24 @@ La prioridad del proyecto es ofrecer una excelente experiencia utilizando modelo
 
 # Estado del proyecto
 
-**Versión actual:** `v0.0.1`
+**Versión actual:** `v0.4.0`
 
 🚧 **En desarrollo activo.**
 
-La arquitectura principal ya se encuentra definida, pero muchas funcionalidades todavía están siendo implementadas.
+PostuLatte cuenta actualmente con una base técnica sólida sobre la que se desarrollarán las funcionalidades principales.
 
-La estructura del proyecto puede evolucionar antes de la primera versión estable.
+En esta versión ya se encuentran implementados:
+
+- ✅ Arquitectura basada en Domain-Driven Design (DDD) y Clean Architecture.
+- ✅ Sistema de configuración mediante YAML y Pydantic V2.
+- ✅ Integración con Ollama como proveedor LLM local por defecto.
+- ✅ Extracción unificada de documentos PDF y DOCX.
+- ✅ Tests unitarios para los módulos implementados.
+- ✅ Documentación arquitectónica y ADR del proyecto.
+
+Actualmente el desarrollo se centra en el **Sprint 5**, cuyo objetivo es construir el modelo de dominio `CandidateProfile`, que servirá como núcleo para todas las funcionalidades futuras del proyecto.
+
+La API y la estructura interna todavía pueden evolucionar antes de la primera versión estable (`v1.0.0`), aunque la arquitectura principal ya se considera estable.
 
 ---
 
