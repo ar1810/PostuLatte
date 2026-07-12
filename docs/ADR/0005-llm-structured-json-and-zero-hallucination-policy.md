@@ -23,3 +23,6 @@ Se establecen dos reglas de ingeniería de software obligatorias para el pipelin
     * **Validación predecible:** Los valores `null` mapean directamente con los campos `Optional` de nuestros modelos Pydantic V2 sin requerir lógica intermedia de limpieza.
 * **Negativas:**
     * **Presión en el prompt engineering:** Exige prompts mucho más rígidos, detallados y penalizadores, lo que consume mayor ventana de contexto y requiere pruebas exhaustivas para asegurar que modelos de 8B de parámetros o menores no ignoren las restricciones.
+	
+### Evolución del Diseño (Sprint 5)
+* **Ajuste de Uniformidad en Inferencia (Julio 2026):** Se eliminó la opción de retornar `null` para datos ausentes. Se determinó de forma estricta que todo campo no explícito en el texto bruto debe inicializarse como un contenedor vacío (`[]` para colecciones y `""` para strings). Esto elimina la ambigüedad cognitiva en el LLM local y garantiza un comportamiento 100% predecible en el formateo.

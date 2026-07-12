@@ -10,6 +10,8 @@ Version objetivo: **v1.0**
 
 Sprint actual: **Sprint 5 ¡X Pipeline CV ¡÷ CandidateProfile**
 
+> ?? **Nota de Arquitectura (Sprint 5):** Las entidades `JobOffer` y `MatchResult`, así como sus firmas en las interfaces de IA, se mantienen comentadas/postergadas intencionalmente para evitar acoplamientos prematuros y asegurar que la suite de pruebas unitarias corra de manera aislada y limpia durante la fase de extracción del perfil. Se descomentarán al iniciar el diseño formal del Sprint 6.
+
 Estado del proyecto:
 
 - ? Arquitectura base
