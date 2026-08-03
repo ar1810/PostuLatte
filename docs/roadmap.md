@@ -1,4 +1,4 @@
-# Roadmap de PostuLatte
+# Roadmap de Desarrollo de PostuLatte
 
 Este documento describe la evolución prevista del proyecto y el estado de cada sprint hasta la versión 1.0.
 
@@ -7,14 +7,14 @@ Este documento describe la evolución prevista del proyecto y el estado de cada s
 # Estado actual
 
 Versión objetivo: **v1.0**
-Sprint actual: **Sprint 6 - Buscador de ofertas (Planificación)**
+Sprint actual: **Sprint 6 - Dominio de ofertas y Tailoring Engine**
 
 Estado del proyecto:
 - [x] Arquitectura base consolidada
 - [x] Configuración centralizada mediante YAML y Pydantic
 - [x] Integración e interfaz de desacoplamiento con Ollama
 - [x] Extracción unificada de documentos (PDF/DOCX) con Factory
-- [x] Pipeline e ingesta cognitiva de CV hacia CandidateProfile con 12 tests en verde
+- [x] Pipeline e ingesta cognitiva de CV hacia `CandidateProfile` con la suite de pruebas en verde
 
 ---
 
@@ -27,14 +27,15 @@ Estado del proyecto:
 | Sprint 3 | [x] | Integración con Ollama |
 | Sprint 4 | [x] | Extracción de documentos |
 | Sprint 5 | [x] | Pipeline CV -> CandidateProfile |
-| Sprint 6 | [ ] | Buscador de ofertas |
-| Sprint 7 | [ ] | Motor ATS |
+| Sprint 6 | [ ] | Dominio de ofertas y Tailoring Engine |
+| Sprint 7 | [ ] | Motor de Compatibilidad ATS |
 | Sprint 8 | [ ] | Generador de CV |
 | Sprint 9 | [ ] | Generador de cartas |
 | Sprint 10 | [ ] | CLI completa |
 | Sprint 11 | [ ] | Interfaz gráfica |
 | Sprint 12 | [ ] | Release v1.0 |
 
+> **Nota:** Los sprints representan hitos funcionales de alto nivel. La implementación interna puede reorganizarse cuando una decisión arquitectónica mejore la escalabilidad del proyecto, siempre que se mantengan la visión, la filosofía y los objetivos funcionales definidos en este roadmap.
 ---
 
 # Objetivos de cada Sprint
@@ -65,13 +66,21 @@ Estado del proyecto:
 - Implementación del orquestador `ProfileExtractionPipeline` en la capa Core.
 - **Suite de pruebas:** 12 tests ejecutados exitosamente (`12 passed`).
 
-> ?? **Nota de Arquitectura (Sprint 5 - Consolidada):** Las entidades `JobOffer` y `MatchResult`, así como sus firmas en las interfaces de IA, se mantuvieron comentadas intencionalmente durante este sprint para evitar acoplamientos prematuros en la suite de pruebas unitarias. Se procederá a su activación e implementación al iniciar el Sprint 6 y 7 de forma secuencial.
+> **Nota de Arquitectura (Sprint 5 - Consolidada):**
+> Durante este sprint se decidió posponer deliberadamente el modelado del dominio de ofertas y del motor de adaptación para evitar acoplamientos prematuros con la ingesta de vacantes. Dichas entidades (`JobDescription` y `AdaptationResult`) se implementarán al inicio del Sprint 6, manteniendo la estabilidad de la arquitectura y de la suite de pruebas.
 
-## Sprint 6 - Buscador de ofertas [ ]
-Objetivos previstos:
-- Modelado del dominio para `JobOffer`.
-- Integración con mecanismos de búsqueda o ingesta de ofertas.
-- Importación y normalización de descripciones de puestos.
+## Sprint 6 - Dominio de ofertas y Tailoring Engine [ ]
+Objetivos:
+- Diseñar el modelo de dominio `JobDescription`.
+- Implementar la entidad `JobDescription`.
+- Diseñar e implementar el modelo `JobAnalysis` como resultado estructurado del análisis entre un candidato y una oferta laboral.
+- Implementar las entidades de dominio siguiendo los principios establecidos para `CandidateProfile`.
+- Definir la arquitectura base del Tailoring Engine y su integración con el dominio.
+- Incorporar pruebas unitarias para las nuevas entidades del dominio.
+- Mantener la suite de pruebas completamente en verde.
 
+> **Nota de Arquitectura:**
+Durante este sprint se consolidará el lenguaje ubicuo del dominio relacionado con las ofertas laborales. El objetivo es establecer un modelo independiente de cualquier fuente de datos (scraping, APIs o importación manual), permitiendo que las futuras integraciones operen exclusivamente sobre entidades del dominio.
 ---
-*(Los Sprints 7 al 12 mantienen sus objetivos de matching ATS, generadores automatizados, CLI y GUI según lo planificado originalmente)*
+
+*El contenido de los próximos sprints podrá ajustarse conforme evolucione el dominio del proyecto. Este roadmap refleja la planificación actual y prioriza la consolidación del dominio antes de incorporar nuevas integraciones, automatizaciones o interfaces de usuario.*
