@@ -1,33 +1,46 @@
 # Arquitectura del Sistema
 
-Este documento describe la arquitectura de PostuLatte, las responsabilidades de cada capa y el flujo general de información dentro de la aplicación.
+Este documento describe la arquitectura lógica de PostuLatte, las responsabilidades de cada capa y el flujo de información entre los distintos componentes del sistema.
 
-El proyecto sigue los principios de **Arquitectura Limpia (Clean Architecture)** y **Diseño Guiado por el Dominio (DDD)**.
+La arquitectura sigue los principios de **Clean Architecture** y **Domain-Driven Design (DDD)**, priorizando el desacoplamiento entre el dominio del negocio y los detalles de infraestructura.
+
+El objetivo es que las reglas del negocio permanezcan independientes de proveedores de IA, formatos de documentos, interfaces de usuario o mecanismos de obtención de ofertas laborales.
 
 ---
 
 # Principios arquitectónicos
 
-La arquitectura se basa en cuatro principios fundamentales:
+La arquitectura se basa en los siguientes principios:
 - El dominio contiene únicamente reglas de negocio puras.
 - La infraestructura implementa servicios externos sin contaminar el dominio.
 - La capa de aplicación/core orquesta los casos de uso utilizando el dominio.
 - Las dependencias siempre apuntan hacia adentro (hacia el dominio).
+- El dominio representa la única fuente de verdad del sistema.
+- Toda información externa debe normalizarse antes de ingresar al dominio.
+- El dominio nunca depende del origen de los datos (CV, API, scraping o entrada manual).
+
+## Principio de Normalización
+
+Toda información externa que ingresa al sistema debe transformarse primero en una entidad del dominio.
+A partir de ese momento, el resto de la aplicación opera exclusivamente sobre dichas entidades, sin depender del formato original ni del mecanismo mediante el cual fueron obtenidas.
 
 ---
 
 # Arquitectura en capas
 
-CLI / GUI
-│
-▼
-src/core (Application)
-│
-▼
-src/domain (Entities / Interfaces)
-▲
-│
-src/infrastructure (AI / Extraction / Config)
+                 CLI / GUI
+                     │
+                     ▼
+             Workflow (Flujos)
+                     │
+                     ▼
+        Core (Casos de uso / Orquestación)
+                     │
+                     ▼
+                 Dominio
+                     ▲
+                     │
+     IA · Extraction · Config · Storage
 
 * Las capas externas pueden depender de las internas.
 * Las capas internas nunca conocen detalles de implementación de las capas externas.
@@ -37,33 +50,81 @@ src/infrastructure (AI / Extraction / Config)
 # Responsabilidades de Componentes Clave
 
 ## src/domain
-Representa el corazón inmutable de PostuLatte.
-- **`entities.py`:** Contiene los modelos base (`CandidateProfile`, `PersonalInfo`, `SkillsInventory`, etc.) validados rígidamente mediante Pydantic V2.
-- **`interfaces.py`:** Define los contratos y abstracciones puras (`AIService`) que el dominio exige para operar, completamente desacoplado de proveedores específicos.
+
+- Representa el núcleo del negocio.
+
+- Contiene las entidades, modelos e interfaces que describen la realidad del dominio.
+
+- Todas las operaciones posteriores trabajan exclusivamente sobre estas entidades normalizadas, independientemente del origen de los datos.
 
 ## src/core (Application)
-- **`application.py` (`ProfileExtractionPipeline`):** Actúa como el orquestador de casos de uso. Coordina la fábrica de extracción física para obtener texto de los archivos, despacha el procesamiento semántico a la infraestructura de IA inyectada y retorna el perfil de dominio construido.
 
-## src/infrastructure
-Implementa la comunicación directa con tecnologías de terceros y el sistema operativo.
-- **`src/extraction/`:** Aloja los lectores físicos independientes (`PDFExtractor`, `DocxExtractor`) junto a su `ExtractorFactory`.
-- **`src/ai/`:** Contiene el cliente específico de infraestructura `OllamaAIService` que interactúa con la API de Ollama (forzando `format="json"` y `temperature=0.0`) y el `PromptBuilder` que formatea las directivas rígidas del sistema.
+- Coordina los casos de uso.
+
+- No contiene reglas de negocio propias.
+
+- Su responsabilidad es orquestar los distintos componentes del sistema utilizando únicamente las abstracciones definidas por el dominio.
+
+## src/workflow
+
+Representa los flujos completos que ejecuta el usuario.
+
+Cada workflow combina uno o varios casos de uso para resolver una tarea concreta:
+
+- Analizar una oferta.
+- Adaptar un CV.
+- Preparar una entrevista.
+- Generar una carta de presentación.
+
+Los workflows coordinan distintos servicios, pero no contienen reglas de negocio.
+
+## src/extraction
+
+- Implementa la transformación de documentos físicos en texto plano.
+
+- Su responsabilidad termina una vez obtenido el contenido textual.
+
+- No interpreta el significado de la información extraída.
+
+## src/ai
+
+- Implementa los proveedores de inteligencia artificial.
+
+- Su responsabilidad consiste únicamente en transformar instrucciones estructuradas en respuestas estructuradas.
+
+- No contiene reglas de negocio ni decisiones funcionales del sistema.
 
 ---
 
-# Flujo Principal de Ingesta (Sprint 5)
+# Flujo de Normalización y Análisis
 
 El flujo secuencial de la información se ejecuta de la siguiente manera de principio a fin:
 
-[Archivo Físico .pdf/.docx]
-│
-▼ (ExtractorFactory)
-[Texto Bruto Extraído]
-│
-▼ (PromptBuilder + AIService)
-[JSON Estructurado desde Ollama]
-│
-▼ (Pydantic Validation)
-[CandidateProfile (Entidad de Dominio)]
+		Documento (PDF/DOCX)          Oferta laboral
+				│                           │
+				▼                           ▼
+		ExtractorFactory            Normalización
+				│                           │
+				▼                           ▼
+		CandidateProfile        JobDescription
+				\                 /
+				\               /
+				 ▼             ▼
+				Tailoring Engine
+						│
+						▼
+					JobAnalysis
 
-Una vez generado el `CandidateProfile`, el documento original deja de ser necesario para el funcionamiento del sistema. Todas las capacidades posteriores (búsqueda, matching, generación) operan de manera exclusiva sobre este modelo unificado del dominio.
+Una vez normalizada, cualquier oferta laboral se convierte en un JobDescription. El motor de adaptación compara esta entidad con el CandidateProfile del usuario y produce un JobAnalysis, que constituye el resultado estructurado del análisis de compatibilidad.
+
+---
+
+La arquitectura está diseñada para permitir la incorporación de nuevas fuentes de información sin modificar las reglas del dominio.
+
+En el futuro podrán añadirse integraciones con APIs, plataformas de empleo, importación manual o scraping de ofertas laborales. Todas ellas deberán transformar la información obtenida en entidades del dominio antes de ser utilizadas por el resto del sistema.
+
+Este principio garantiza el desacoplamiento entre la infraestructura y las reglas del dominio.
+
+Como consecuencia, el proyecto puede evolucionar incorporando nuevos proveedores, nuevas interfaces o nuevas fuentes de datos sin comprometer el núcleo del negocio.
+
+> **Nota:** Algunos componentes descritos en este documento corresponden a la arquitectura objetivo del Sprint 6 y serán incorporados progresivamente durante su implementación.
