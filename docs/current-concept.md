@@ -1,6 +1,6 @@
 # PostuLatte - Concepto Actual del Proyecto
 
-**Última actualización:** Julio 2026
+**Última actualización:** Agosto 2026
 
 ---
 
@@ -54,55 +54,76 @@ Reducir el tiempo invertido en:
 
 ---
 
-# Arquitectura general
+# Modelo del sistema
 
-El proyecto sigue una arquitectura modular inspirada en Clean Architecture.
+PostuLatte está diseñado alrededor de un dominio central que representa la información profesional del usuario y las oportunidades laborales analizadas.
 
-Se divide en:
+Los datos externos son transformados en modelos estructurados antes de ser utilizados por las distintas funcionalidades del sistema.
 
-- Dominio
-- Infraestructura
-- IA
-- Workflow
-- CLI
-- Configuración
+La aplicación se organiza siguiendo principios de modularidad, separación de responsabilidades y desacoplamiento entre el núcleo del negocio y sus implementaciones externas.
 
-Cada módulo tiene una única responsabilidad.
+---
+
+# Modelo mental
+
+PostuLatte no trabaja directamente con documentos.
+
+Los documentos y fuentes externas son utilizados únicamente para construir información estructurada del dominio.
+
+Ejemplo:
+
+CV
+↓
+CandidateProfile
+
+Oferta laboral
+↓
+JobDescription
+
+CandidateProfile + JobDescription
+↓
+JobAnalysis
+
+A partir de estas entidades, las funcionalidades del sistema pueden analizar, adaptar y generar contenido sin depender del formato original de los datos.
 
 ---
 
 # Filosofía de IA
 
-La IA debe ser reemplazable.
+La inteligencia artificial es una herramienta de asistencia, no un reemplazo del criterio humano.
 
-El proyecto nunca dependerá de un único proveedor.
+La IA no posee autoridad sobre las decisiones del usuario.
 
-Actualmente:
+PostuLatte está diseñado para utilizar modelos locales o externos sin depender de un proveedor específico.
 
-✔ Ollama
+La IA analiza, propone y facilita tareas repetitivas.
 
-Planificado:
-
-- OpenAI
-- Anthropic
-- Gemini
-- LM Studio
-- otros proveedores compatibles
+El usuario mantiene siempre el control sobre las decisiones finales.
 
 ---
 
-# Perfil del usuario
+# Perfil profesional
 
-El perfil profesional será el núcleo del proyecto.
+El perfil profesional representa la fuente de verdad del dominio del usuario dentro del sistema.
+
+Los documentos originales son únicamente fuentes de información que permiten construir dicho perfil.
+
+Una vez construido el perfil, las funcionalidades posteriores operan sobre las entidades del dominio y no sobre los documentos originales.
 
 Podrá construirse desde:
 
 - CV PDF
 - CV DOCX
-- edición manual
-- futuras integraciones (LinkedIn, GitHub, Portfolio)
+- Edición manual
+- Futuras integraciones (LinkedIn, GitHub, Portfolio)
 
 Internamente siempre se convertirá a un CandidateProfile.
+
+Si no existe un perfil cargado, PostuLatte debe guiar al usuario para crearlo.
+
+La opción recomendada será importar un CV existente.
+
+Posteriormente el usuario podrá revisar y corregir la información extraída.
 
 ---
 
@@ -158,16 +179,6 @@ Ejemplos:
 
 ---
 
-# Perfil profesional
-
-Si no existe un perfil cargado, PostuLatte debe guiar al usuario para crearlo.
-
-La opción recomendada será importar un CV existente.
-
-Posteriormente el usuario podrá revisar y corregir la información extraída.
-
----
-
 # Principios de diseño
 
 ✓ Modular
@@ -198,11 +209,11 @@ Implementado:
 - Dominio
 - Interfaces
 - Configuración mediante YAML + Pydantic
-- Cliente Ollama
-- Match ATS mediante IA
+- Proveedor de IA desacoplado
+- Pipeline de construcción de CandidateProfile
 - Instalador interactivo
 - Documentación inicial
-- ADR iniciales
+- ADR iniciales documentados
 
 En planificación:
 
