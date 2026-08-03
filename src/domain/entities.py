@@ -1,3 +1,4 @@
+# src/domain/entities.py
 from typing import List, Optional
 from pydantic import BaseModel, Field
 
@@ -38,7 +39,7 @@ class SkillsInventory(BaseModel):
 
 class LanguageCompetence(BaseModel):
     """Registro de competencias lingüísticas."""
-    language: str = Field(..., description="Idioma (ej: 'Inglés')")
+    language: Optional[str] = Field(None, description="Idioma (ej: 'Inglés')")
     level: Optional[str] = Field(None, description="Nivel declarado (ej: 'B2', 'Avanzado', 'Nativo')")
 
 # ---------------------------------------------------------------------------
