@@ -2,50 +2,51 @@
 import json
 import pytest
 from src.ai.prompt_builder import PromptBuilder
-from src.domain.entities import CandidateProfile
 
 def test_prompt_builder_initialization():
-    """Valida que el PromptBuilder se instancie correctamente y extraiga el esquema."""
+    """Valida que el PromptBuilder se instancie correctamente y contenga la plantilla esperada."""
     builder = PromptBuilder()
-    assert builder._schema is not None
-    assert "properties" in builder._schema
+    assert builder._template is not None
+    assert "personal" in builder._template
+    assert "skills" in builder._template
 
 def test_build_system_instructions_contains_strict_rules():
-    """Valida que el System Prompt contenga las directivas de la Política de Extracción Pura
-    y la directiva estricta de contenedores vacíos sin ambigüedades.
+    """Valida que el System Prompt contenga las reglas críticas de extracción
+    y las directivas estrictas de formato.
     """
     builder = PromptBuilder()
     instructions = builder.build_system_instructions()
     
-    assert "Cero Tolerancia a la Alucinación" in instructions
-    assert "[] para colecciones" in instructions
-    assert '"" para campos de texto' in instructions
+    assert "REGLAS CRÍTICAS DE EXTRACCIÓN" in instructions
+    assert "lista vacía `[]`" in instructions
+    assert "asigna null" in instructions
     assert "ÚNICAMENTE el objeto JSON válido" in instructions
 
 def test_build_system_instructions_includes_valid_json_schema():
-    """Valida que el esquema inyectado dentro de las instrucciones sea rastreable
-    y fiel al modelo del dominio CandidateProfile.
+    """Valida que la plantilla JSON inyectada dentro de las instrucciones sea parseable
+    y contenga la estructura del perfil.
     """
     builder = PromptBuilder()
     instructions = builder.build_system_instructions()
     
-    # El prompt debe contener la estructura del esquema
+    # El prompt debe contener la estructura
     assert "personal" in instructions
     assert "skills" in instructions
     
     # Extraer la porción JSON del prompt para verificar que sea parseable
-    marker = "Esquema JSON requerido:\n"
+    marker = "Estructura JSON requerida:\n"
     json_start_idx = instructions.find(marker) + len(marker)
     json_str = instructions[json_start_idx:].strip()
     
-    parsed_schema = json.loads(json_str)
-    assert parsed_schema["type"] == "object"
-    assert "properties" in parsed_schema
+    parsed_template = json.loads(json_str)
+    assert isinstance(parsed_template, dict)
+    assert "personal" in parsed_template
+    assert "experience" in parsed_template
 
 def test_build_user_message_formatting():
     """Valida que el mensaje del usuario aísle e inserte correctamente el texto bruto."""
     builder = PromptBuilder()
-    raw_text = "Juan Pérez - Desarrollador Python - Python, SQL"
+    raw_text = "Diego Silva - QA Tester - Python, SQL"
     user_message = builder.build_user_message(raw_text)
     
     assert raw_text in user_message
