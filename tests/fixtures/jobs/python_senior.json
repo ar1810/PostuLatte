@@ -1,0 +1,25 @@
+{
+  "title": "Senior Python Developer",
+  "company": "TechInnovate Solutions",
+  "experience_years": 4,
+  "raw_text": "TechInnovate Solutions busca Senior Python Developer con más de 4 años de experiencia en desarrollo backend. Responsabilidades: Diseñar y mantener APIs RESTful utilizando FastAPI o Django, optimizar consultas SQL en PostgreSQL e integrar servicios de IA locales. Requisitos obligatorios: Python 3.10+, FastAPI, PostgreSQL, Docker, Git, Unit Testing con Pytest. Requisitos deseables: Experiencia con Ollama/LLMs, Redis, CI/CD con GitHub Actions.",
+  "required_skills": [
+    "Python",
+    "FastAPI",
+    "PostgreSQL",
+    "Docker",
+    "Git",
+    "Pytest"
+  ],
+  "desired_skills": [
+    "Ollama",
+    "LLMs",
+    "Redis",
+    "GitHub Actions"
+  ],
+  "responsibilities": [
+    "Diseñar y mantener APIs RESTful",
+    "Optimizar consultas SQL en base de datos",
+    "Integrar servicios de Inteligencia Artificial"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "title": "Frontend React Engineer",
+  "company": "PixelCraft Studio",
+  "experience_years": 3,
+  "raw_text": "PixelCraft Studio busca Frontend React Engineer para construir interfaces web modernas e interactivas. Responsabilidades: Desarrollar componentes en React/Next.js, maqueta accesible con Tailwind CSS e integrar APIs REST. Requisitos obligatorios: JavaScript ES6+, TypeScript, React.js, HTML5, CSS3, Tailwind CSS, Git. Requisitos deseables: Next.js, Redux Toolkit, Figma, Web Vitals performance.",
+  "required_skills": [
+    "JavaScript",
+    "TypeScript",
+    "React.js",
+    "HTML5",
+    "CSS3",
+    "Tailwind CSS",
+    "Git"
+  ],
+  "desired_skills": [
+    "Next.js",
+    "Redux Toolkit",
+    "Figma"
+  ],
+  "responsibilities": [
+    "Desarrollar componentes dinámicos en React",
+    "Implementar maquetación responsive y accesible con Tailwind CSS",
+    "Consumir APIs RESTful backend"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "title": "QA Automation Engineer",
+  "company": "QualityFirst Labs",
+  "experience_years": 3,
+  "raw_text": "QualityFirst Labs busca QA Automation Engineer para liderar la estrategia de testing de nuestras aplicaciones web y servicios backend. Responsabilidades: Diseñar planes de prueba, crear suites de automatización End-to-End y CI/CD integration. Requisitos obligatorios: Python, Pytest, Selenium or Playwright, Git, REST API Testing. Requisitos deseables: Docker, Postman, JMeter, experiencia en metodologías Agile.",
+  "required_skills": [
+    "Python",
+    "Pytest",
+    "Selenium",
+    "Playwright",
+    "Git",
+    "REST API Testing"
+  ],
+  "desired_skills": [
+    "Docker",
+    "Postman",
+    "JMeter",
+    "Agile"
+  ],
+  "responsibilities": [
+    "Diseñar planes de prueba y estrategias de QA",
+    "Automatizar suites de prueba End-to-End",
+    "Integrar ejecuciones de prueba en pipelines CI/CD"
+  ]
+}
