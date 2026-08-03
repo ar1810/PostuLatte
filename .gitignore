@@ -63,12 +63,27 @@ data/storage/*.sqlite
 data/storage/*.sqlite3
 
 # ===========================================
-# User Profiles
+# User Profiles & Data
 # ===========================================
 
 data/profiles/*
 !data/profiles/.gitkeep
 !data/profiles/example_profile.yaml
+
+data/examples/resumes/*
+!data/examples/resumes/.gitkeep
+
+# ===========================================
+# Resumes & Sensitive User Documents (Zero-PII)
+# ===========================================
+
+# Ignorar todos los documentos de lectura en la raíz o carpetas generales
+*.pdf
+*.docx
+*.doc
+
+# Permitir explícitamente ÚNICAMENTE la carpeta de fixtures anónimos para tests
+!tests/fixtures/**
 
 # ===========================================
 # Generated Files
