@@ -1,82 +1,127 @@
 # src/cli/main.py
 import argparse
 import json
+import logging
+import sys
 from pathlib import Path
-from typing import Any, List, Optional
 
-from src.domain.entities.candidate import CandidateProfile, PersonalInfo, SkillsInfo
+from src.ai.ollama_client import OllamaAIService
+from src.core.application import ProfileExtractionPipeline
 from src.domain.entities.job import JobDescription
 from src.workflow.analyze_job import JobAnalyzerWorkflow
 
 
-def create_parser() -> argparse.ArgumentParser:
+def setup_logger() -> logging.Logger:
+    logger = logging.getLogger("PostuLatteCLI")
+    if not logger.handlers:
+        handler = logging.StreamHandler(sys.stdout)
+        formatter = logging.Formatter("[%(levelname)s] %(message)s")
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+        logger.setLevel(logging.INFO)
+    return logger
+
+
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="PostuLatte - Asistente de optimización de candidaturas laborales"
+        description="PostuLatte - Asistente inteligente para candidaturas laborales impulsado por IA local."
     )
     subparsers = parser.add_subparsers(dest="command", help="Comandos disponibles")
 
-    analyze_parser = subparsers.add_parser(
-        "analyze", help="Analiza la compatibilidad entre un CV y una oferta"
+    # Comando 1: extract-cv
+    cv_parser = subparsers.add_parser(
+        "extract-cv", help="Extrae y genera la entidad CandidateProfile desde un CV."
     )
-    analyze_parser.add_argument(
-        "--cv", "-c", required=True, type=Path, help="Ruta al archivo PDF/DOCX del CV"
+    cv_parser.add_argument(
+        "--cv-path",
+        type=Path,
+        required=True,
+        help="Ruta al archivo CV (PDF o DOCX).",
     )
-    analyze_parser.add_argument(
-        "--job", "-j", required=True, type=Path, help="Ruta al JSON de la oferta"
+    cv_parser.add_argument(
+        "--output",
+        type=Path,
+        required=False,
+        help="Ruta de destino opcional para guardar el resultado en JSON.",
+    )
+
+    # Comando 2: analyze-job
+    job_parser = subparsers.add_parser(
+        "analyze-job", help="Analiza la compatibilidad entre un perfil y una oferta laboral."
+    )
+    job_parser.add_argument(
+        "--cv-path",
+        type=Path,
+        required=True,
+        help="Ruta al archivo CV del candidato.",
+    )
+    job_parser.add_argument(
+        "--job-path",
+        type=Path,
+        required=True,
+        help="Ruta al archivo JSON con la descripción del trabajo.",
     )
 
     return parser
 
 
-def run_cli(args: Optional[List[str]] = None, ai_service: Optional[Any] = None) -> int:
-    parser = create_parser()
-    parsed_args = parser.parse_args(args)
+def main() -> None:
+    logger = setup_logger()
+    parser = build_parser()
+    args = parser.parse_args()
 
-    if parsed_args.command == "analyze":
-        cv_path: Path = parsed_args.cv
-        job_path: Path = parsed_args.job
+    if not args.command:
+        parser.print_help()
+        sys.exit(0)
 
-        if not cv_path.exists():
-            print(f"Error: El archivo de CV '{cv_path}' no existe.")
-            return 1
+    try:
+        # Instanciación de servicios compartidos
+        ai_service = OllamaAIService()
 
-        if not job_path.exists():
-            print(f"Error: El archivo de oferta '{job_path}' no existe.")
-            return 1
+        if args.command == "extract-cv":
+            if not args.cv_path.exists():
+                logger.error(f"El archivo especificado no existe: {args.cv_path}")
+                sys.exit(1)
 
-        print("Cargando datos...")
+            pipeline = ProfileExtractionPipeline(ai_service=ai_service)
+            logger.info(f"Procesando CV en: {args.cv_path}")
+            profile = pipeline.execute(args.cv_path)
 
-        with open(job_path, "r", encoding="utf-8") as f:
-            job_data = json.load(f)
-        job_entity = JobDescription(**job_data)
+            profile_json = profile.model_dump_json(indent=2)
+            if args.output:
+                args.output.write_text(profile_json, encoding="utf-8")
+                logger.info(f"Perfil exportado exitosamente en: {args.output}")
+            else:
+                print(profile_json)
 
-        candidate_entity = CandidateProfile(
-            personal=PersonalInfo(full_name="Candidato Extraído"),
-            skills=SkillsInfo(hard_skills=["Python", "SQL", "Git"]),
-        )
+        elif args.command == "analyze-job":
+            if not args.cv_path.exists():
+                logger.error(f"El archivo de CV no existe: {args.cv_path}")
+                sys.exit(1)
+            if not args.job_path.exists():
+                logger.error(f"El archivo de oferta laboral no existe: {args.job_path}")
+                sys.exit(1)
 
-        # Si no nos pasan un mock desde el test, instanciamos el servicio
-        if ai_service is None:
-            from src.ai import ollama_client
-            # Si el cliente no se pasa, busca la primera clase disponible en el módulo
-            ai_service = getattr(ollama_client, "OllamaClient", None) or getattr(ollama_client, "OllamaService", None)()
+            # 1. Pipeline para perfil
+            pipeline = ProfileExtractionPipeline(ai_service=ai_service)
+            profile = pipeline.execute(args.cv_path)
 
-        workflow = JobAnalyzerWorkflow(ai_service=ai_service)
+            # 2. Cargar datos de la vacante
+            with open(args.job_path, "r", encoding="utf-8") as f:
+                job_raw = json.load(f)
+            job = JobDescription(**job_raw)
 
-        print("Analizando compatibilidad con IA...")
-        result = workflow.run(candidate=candidate_entity, job=job_entity)
+            # 3. Orquestar análisis
+            workflow = JobAnalyzerWorkflow(ai_service=ai_service)
+            logger.info("Iniciando análisis de compatibilidad laboral...")
+            analysis_result = workflow.run(candidate=profile, job=job)
 
-        print("\n=== INFORME DE COMPATIBILIDAD ===")
-        print(f"Coincidencia: {result.match_percentage}%")
-        print(f"Habilidades Coincidentes: {', '.join(result.matching_skills)}")
-        print(f"Habilidades Faltantes: {', '.join(result.missing_skills)}")
-        print(f"Fortalezas: {', '.join(result.key_strengths)}")
-        print(f"Sugerencias: {', '.join(result.improvement_suggestions)}")
-        return 0
+            print(analysis_result.model_dump_json(indent=2))
 
-    parser.print_help()
-    return 0
+    except Exception as e:
+        logger.error(f"Ocurrió un error inesperado durante la ejecución: {e}")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
-    raise SystemExit(run_cli())
+    main()
