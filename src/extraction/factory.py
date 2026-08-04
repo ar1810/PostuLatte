@@ -1,3 +1,4 @@
+# /src/extraction/factory.py
 from pathlib import Path
 
 from .docx_extractor import DOCXExtractor
