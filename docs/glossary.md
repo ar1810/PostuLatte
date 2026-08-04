@@ -170,3 +170,49 @@ Desacoplar el procesamiento del formato físico del documento.
 - PDFExtractor
 - DOCXExtractor
 - ProfileExtractionPipeline
+
+---
+
+## JobDescription
+
+> Representa los requisitos y detalles de una oferta laboral.
+
+# Responsabilidad
+
+Centralizar las exigencias, el rol y las competencias requeridas por un puesto.
+
+# Relacionado con
+
+- JobAnalysis
+- CandidateProfile
+
+---
+
+## JobAnalysis
+
+> Representa el resultado de la evaluación entre un candidato y un puesto.
+
+# Responsabilidad
+
+Consolidar el nivel de compatibilidad, brechas identificadas y recomendaciones.
+
+# Relacionado con
+
+- CandidateProfile
+- JobDescription
+
+---
+
+## DomainException
+
+> Representa un error de regla de negocio o falla en las validaciones del dominio.
+
+# Responsabilidad
+
+Garantizar que las violaciones de invariantes de dominio sean capturadas de forma explícita.
+
+# Relacionado con
+
+- CandidateProfile
+- JobDescription
+- JobAnalysis
