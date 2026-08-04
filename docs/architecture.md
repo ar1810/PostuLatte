@@ -100,20 +100,29 @@ Los workflows coordinan distintos servicios, pero no contienen reglas de negocio
 
 El flujo secuencial de la información se ejecuta de la siguiente manera de principio a fin:
 
-		Documento (PDF/DOCX)          Oferta laboral
-				│                           │
-				▼                           ▼
-		ExtractorFactory            Normalización
-				│                           │
-				▼                           ▼
-		CandidateProfile        JobDescription
-				\                 /
-				\               /
-				 ▼             ▼
-				Tailoring Engine
-						│
-						▼
-					JobAnalysis
+Documento (PDF/DOCX)
+        │
+        ▼
+ExtractorFactory
+        │
+        ▼
+CandidateProfile
+
+Oferta laboral
+        │
+        ▼
+Normalización
+        │
+        ▼
+JobDescription
+
+CandidateProfile + JobDescription
+        │
+        ▼
+Tailoring Engine
+        │
+        ▼
+JobAnalysis
 
 Una vez normalizada, cualquier oferta laboral se convierte en un JobDescription. El motor de adaptación compara esta entidad con el CandidateProfile del usuario y produce un JobAnalysis, que constituye el resultado estructurado del análisis de compatibilidad.
 
@@ -127,4 +136,4 @@ Este principio garantiza el desacoplamiento entre la infraestructura y las regla
 
 Como consecuencia, el proyecto puede evolucionar incorporando nuevos proveedores, nuevas interfaces o nuevas fuentes de datos sin comprometer el núcleo del negocio.
 
-> **Nota:** Algunos componentes descritos en este documento corresponden a la arquitectura objetivo del Sprint 6 y serán incorporados progresivamente durante su implementación.
+> **Nota:** Esta arquitectura representa el estado actual del proyecto a partir de la versión v0.6.0. Nuevos componentes podrán incorporarse en futuros sprints manteniendo los principios aquí definidos.

@@ -216,3 +216,20 @@ Garantizar que las violaciones de invariantes de dominio sean capturadas de form
 - CandidateProfile
 - JobDescription
 - JobAnalysis
+
+---
+
+## JobAnalyzerWorkflow
+
+> Orquesta la comparación entre el perfil de un candidato y una oferta laboral.
+
+# Responsabilidad
+
+Ejecutar el análisis de compatibilidad (gap analysis) utilizando la IA para generar un informe estructurado.
+
+# Relacionado con
+
+- CandidateProfile
+- JobDescription
+- JobAnalysis
+- AIService

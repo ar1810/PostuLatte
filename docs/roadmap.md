@@ -7,14 +7,18 @@ Este documento describe la evolución prevista del proyecto y el estado de cada s
 # Estado actual
 
 Versión objetivo: **v1.0**
-Sprint actual: **Sprint 6 - Dominio de ofertas y Tailoring Engine**
+Sprint actual: **Sprint 7 - Generación de documentación personalizada**
 
 Estado del proyecto:
 - [x] Arquitectura base consolidada
 - [x] Configuración centralizada mediante YAML y Pydantic
 - [x] Integración e interfaz de desacoplamiento con Ollama
 - [x] Extracción unificada de documentos (PDF/DOCX) con Factory
-- [x] Pipeline e ingesta cognitiva de CV hacia `CandidateProfile` con la suite de pruebas en verde
+- [x] Pipeline de construcción de `CandidateProfile`
+- [x] Dominio modular (`CandidateProfile`, `JobDescription`, `JobAnalysis`)
+- [x] Tailoring Engine para análisis estructurado de ofertas
+- [x] CLI con comandos `extract-cv` y `analyze-job`
+- [x] Suite de pruebas completamente en verde (17 tests)
 
 ---
 
@@ -27,10 +31,10 @@ Estado del proyecto:
 | Sprint 3 | [x] | Integración con Ollama |
 | Sprint 4 | [x] | Extracción de documentos |
 | Sprint 5 | [x] | Pipeline CV -> CandidateProfile |
-| Sprint 6 | [ ] | Dominio de ofertas y Tailoring Engine |
-| Sprint 7 | [ ] | Motor de Compatibilidad ATS |
-| Sprint 8 | [ ] | Generador de CV |
-| Sprint 9 | [ ] | Generador de cartas |
+| Sprint 6 | [x] | Dominio de ofertas y Tailoring Engine |
+| Sprint 7 | [ ] | Generación de documentación personalizada |
+| Sprint 8 | [ ] | Motor de búsqueda de ofertas |
+| Sprint 9 | [ ] | Historial de postulaciones |
 | Sprint 10 | [ ] | CLI completa |
 | Sprint 11 | [ ] | Interfaz gráfica |
 | Sprint 12 | [ ] | Release v1.0 |
@@ -64,23 +68,35 @@ Estado del proyecto:
 - Diseño e implementación de `PromptBuilder` con política estricta de contenedores vacíos y cero alucinación (ADR 0005).
 - Estabilización de `OllamaAIService` forzando modo JSON nativo y temperatura 0.0.
 - Implementación del orquestador `ProfileExtractionPipeline` en la capa Core.
-- **Suite de pruebas:** 12 tests ejecutados exitosamente (`12 passed`).
+- **Suite de pruebas:** Consolidada y ampliada durante los siguientes sprints.
 
 > **Nota de Arquitectura (Sprint 5 - Consolidada):**
-> Durante este sprint se decidió posponer deliberadamente el modelado del dominio de ofertas y del motor de adaptación para evitar acoplamientos prematuros con la ingesta de vacantes. Dichas entidades (`JobDescription` y `AdaptationResult`) se implementarán al inicio del Sprint 6, manteniendo la estabilidad de la arquitectura y de la suite de pruebas.
 
-## Sprint 6 - Dominio de ofertas y Tailoring Engine [ ]
+## Sprint 6 - Dominio de ofertas y Tailoring Engine [x]
+Objetivos alcanzados:
+- Diseño e implementación de `JobDescription`.
+- Diseño e implementación de `JobAnalysis`.
+- Separación del dominio en módulos independientes.
+- Implementación del Tailoring Engine.
+- Integración del análisis estructurado mediante IA local.
+- Incorporación del workflow `analyze-job`.
+- Integración de los comandos CLI `extract-cv` y `analyze-job`.
+- Consolidación del dominio siguiendo los principios definidos en el ADR 0007.
+- Suite completa de pruebas en verde (17 tests).
+
+> **Resultado del Sprint 6:**
+> Se consolidó el modelo de dominio para el análisis de ofertas laborales. A partir de este punto, tanto el perfil profesional como las ofertas son representados mediante entidades del dominio (`CandidateProfile` y `JobDescription`), permitiendo que el Tailoring Engine produzca un `JobAnalysis` completamente desacoplado de las fuentes originales de datos.
+
+## Sprint 7 - Generación de documentación personalizada [ ]
+
 Objetivos:
-- Diseñar el modelo de dominio `JobDescription`.
-- Implementar la entidad `JobDescription`.
-- Diseñar e implementar el modelo `JobAnalysis` como resultado estructurado del análisis entre un candidato y una oferta laboral.
-- Implementar las entidades de dominio siguiendo los principios establecidos para `CandidateProfile`.
-- Definir la arquitectura base del Tailoring Engine y su integración con el dominio.
-- Incorporar pruebas unitarias para las nuevas entidades del dominio.
-- Mantener la suite de pruebas completamente en verde.
 
-> **Nota de Arquitectura:**
-Durante este sprint se consolidará el lenguaje ubicuo del dominio relacionado con las ofertas laborales. El objetivo es establecer un modelo independiente de cualquier fuente de datos (scraping, APIs o importación manual), permitiendo que las futuras integraciones operen exclusivamente sobre entidades del dominio.
+- Diseñar el workflow de generación documental.
+- Implementar el generador de cartas de presentación.
+- Definir la arquitectura para futuros generadores de CV adaptados.
+- Diseñar el modelo de excepciones del dominio.
+- Mantener la cobertura de pruebas completamente en verde.
+
 ---
 
 *El contenido de los próximos sprints podrá ajustarse conforme evolucione el dominio del proyecto. Este roadmap refleja la planificación actual y prioriza la consolidación del dominio antes de incorporar nuevas integraciones, automatizaciones o interfaces de usuario.*

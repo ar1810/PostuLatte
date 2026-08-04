@@ -62,6 +62,8 @@ Los datos externos son transformados en modelos estructurados antes de ser utili
 
 La aplicación se organiza siguiendo principios de modularidad, separación de responsabilidades y desacoplamiento entre el núcleo del negocio y sus implementaciones externas.
 
+El dominio constituye la única fuente de verdad del sistema; todas las funcionalidades operan sobre entidades normalizadas e independientes de su origen.
+
 ---
 
 # Modelo mental
@@ -205,26 +207,26 @@ Ejemplos:
 
 Implementado:
 
-- Arquitectura base
-- Dominio
-- Interfaces
-- Configuración mediante YAML + Pydantic
-- Proveedor de IA desacoplado
-- Pipeline de construcción de CandidateProfile
-- Instalador interactivo
-- Documentación inicial
-- ADR iniciales documentados
+- Arquitectura basada en Clean Architecture y DDD.
+- Dominio modular (`CandidateProfile`, `JobDescription` y `JobAnalysis`).
+- Interfaces desacopladas para proveedores de IA.
+- Configuración mediante YAML + Pydantic.
+- Pipeline de construcción de `CandidateProfile`.
+- Tailoring Engine para análisis estructurado de ofertas laborales.
+- Workflow de análisis de compatibilidad.
+- CLI con los comandos `extract-cv` y `analyze-job`.
+- Instalador interactivo.
+- Documentación técnica y ADR consolidados.
 
 En planificación:
 
-- Importación automática de CV
-- Workflow modular
-- Buscador de ofertas
-- Generador de CV
-- Carta de presentación
-- Historial de postulaciones
-- Preparación de entrevistas
-- Exportación de documentos
+- Modelo de excepciones del dominio.
+- Generación de CV adaptados.
+- Generación de cartas de presentación.
+- Buscador de ofertas laborales.
+- Historial de postulaciones.
+- Preparación de entrevistas.
+- Exportación de documentos.
 
 ---
 

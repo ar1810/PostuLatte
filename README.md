@@ -1,6 +1,6 @@
 # PostuLatte
 
-> Versión actual: **v0.5.0**
+> Versión actual: **v0.6.0**
 
 > **Automatizá las tareas repetitivas de tu búsqueda laboral. Vos seguís tomando las decisiones.**
 
@@ -45,13 +45,15 @@ PostuLatte fue diseñado siguiendo algunos principios simples.
 
 Actualmente el proyecto incluye:
 
-* ✅ Arquitectura modular basada en capas.
+* ✅ Arquitectura basada en Clean Architecture y Domain-Driven Design (DDD).
+* ✅ Dominio modular con entidades especializadas (`CandidateProfile`, `JobDescription` y `JobAnalysis`).
+* ✅ Pipeline de extracción de perfiles profesionales desde documentos PDF y DOCX.
+* ✅ Tailoring Engine para el análisis estructurado entre un perfil profesional y una oferta laboral.
 * ✅ Integración con Ollama para ejecutar modelos locales.
-* ✅ Sistema de configuración mediante YAML.
-* ✅ Validación de configuración con Pydantic.
-* ✅ Análisis de compatibilidad entre un perfil profesional y una oferta laboral.
-* ✅ Respuestas estructuradas en JSON para evitar resultados ambiguos.
-* ✅ Preparado para soportar múltiples proveedores de IA.
+* ✅ Sistema de configuración mediante YAML y Pydantic V2.
+* ✅ CLI basada en `argparse`.
+* ✅ Suite de pruebas unitarias e integración.
+* ✅ Proveedores de IA desacoplados mediante interfaces.
 
 ---
 
@@ -59,14 +61,13 @@ Actualmente el proyecto incluye:
 
 El objetivo es incorporar progresivamente:
 
-* 📄 Generación de CV adaptados a cada oferta.
+* 📄 Generación de CV adaptados.
 * ✉️ Generación de cartas de presentación.
+* 🎯 Motor de compatibilidad ATS.
 * 📊 Historial de postulaciones.
-* 📁 Exportación a PDF.
-* 🔍 Búsqueda automática de ofertas laborales.
-* 🤖 Soporte para múltiples proveedores de IA.
-* 📈 Métricas y estadísticas de postulaciones.
-* 🎤 Preparación para entrevistas técnicas y de RR. HH.
+* 📁 Exportación de documentos.
+* 🤖 Nuevos proveedores de IA.
+* 🎤 Preparación de entrevistas.
 
 ---
 
@@ -75,18 +76,23 @@ El objetivo es incorporar progresivamente:
 El proyecto sigue una arquitectura modular donde cada componente tiene una responsabilidad específica.
 
 ```text
-Usuario
-   │
-   ▼
-Workflow
-   │
-   ├── Candidate Profile
-   ├── Job Offer
-   ├── AI Provider
-   ├── Match Analyzer
-   ├── Resume Generator
-   ├── Cover Letter Generator
-   └── Exporters
+Documento (PDF/DOCX)
+          │
+          ▼
+ CandidateProfile
+
+Oferta laboral
+          │
+          ▼
+ JobDescription
+
+CandidateProfile + JobDescription
+               │
+               ▼
+        Tailoring Engine
+               │
+               ▼
+         JobAnalysis
 ```
 
 El dominio permanece completamente desacoplado de cualquier proveedor de IA, permitiendo incorporar nuevos modelos sin modificar la lógica principal del sistema.
@@ -112,7 +118,7 @@ La prioridad del proyecto es ofrecer una excelente experiencia utilizando modelo
 
 # Estado del proyecto
 
-**Versión actual:** `v0.5.0`
+**Versión actual:** `v0.6.0`
 
 🚧 **En desarrollo activo.**
 
@@ -120,16 +126,21 @@ PostuLatte cuenta actualmente con una base técnica sólida sobre la que se desa
 
 En esta versión ya se encuentran implementados:
 
-- ✅ Arquitectura basada en Domain-Driven Design (DDD) y Clean Architecture.
-- ✅ Sistema de configuración mediante YAML y Pydantic V2.
-- ✅ Integración con Ollama como proveedor LLM local por defecto.
-- ✅ Extracción unificada de documentos PDF y DOCX.
-- ✅ Tests unitarios para los módulos implementados.
-- ✅ Documentación arquitectónica y ADR del proyecto.
+- ✅ Clean Architecture y DDD.
+- ✅ Configuración mediante YAML + Pydantic V2.
+- ✅ Integración con Ollama.
+- ✅ Extracción de documentos PDF y DOCX.
+- ✅ Construcción de `CandidateProfile`.
+- ✅ Normalización de ofertas laborales (`JobDescription`).
+- ✅ Tailoring Engine.
+- ✅ Generación de `JobAnalysis`.
+- ✅ CLI mediante argparse.
+- ✅ Suite de pruebas (17 tests).
+- ✅ Documentación y ADR.
 
-Actualmente el desarrollo se centra en el **Sprint 5**, cuyo objetivo es construir el modelo de dominio `CandidateProfile`, que servirá como núcleo para todas las funcionalidades futuras del proyecto.
+Actualmente el desarrollo se encuentra en el **Sprint 7**, enfocado en la evolución del motor de compatibilidad ATS y las funcionalidades construidas sobre `JobAnalysis`.
 
-La API y la estructura interna todavía pueden evolucionar antes de la primera versión estable (`v1.0.0`), aunque la arquitectura principal ya se considera estable.
+La arquitectura principal del proyecto ya se considera estable y los nuevos desarrollos se centran en ampliar las capacidades del dominio y los workflows.
 
 ---
 
@@ -148,7 +159,7 @@ Por el momento se requiere:
 
 # Roadmap
 
-## v0.1 a v0.5 (Hitos Alcanzados)
+## v0.1 a v0.6 (Hitos Alcanzados)
 
 * [x] Arquitectura inicial y división en capas.
 
@@ -158,19 +169,29 @@ Por el momento se requiere:
 
 * [x] Extractor físico polimórfico (PDF/DOCX).
 
-* [x] Pipeline definitivo de orquestación y mapeo semántico hacia CandidateProfile.
+* [x] Pipeline definitivo de orquestación y mapeo semántico hacia `CandidateProfile`.
+
+* [x] Dominio modular (`CandidateProfile`, `JobDescription`, `JobAnalysis`).
+
+* [x] Tailoring Engine para análisis estructurado de compatibilidad.
+
+* [x] CLI con comandos `extract-cv` y `analyze-job`.
 
 ## Próximas versiones
 
-* [ ] Motor de búsqueda e ingesta de ofertas (JobOffer).
+* [ ] Motor de búsqueda e normalización de ofertas laborales.
 
-* [ ] Sistema de matching y análisis ATS.
+* [ ] Motor de compatibilidad ATS.
 
-* [ ] Motor de generación de CV.
+* [ ] Generador de CV adaptado.
 
-* [ ] Cartas de presentación adaptativas.
+* [ ] Generador de cartas de presentación.
 
-* [ ] Historial de postulaciones y exportación a PDF.
+* [ ] Historial de postulaciones.
+
+* [ ] Exportación de documentos.
+
+* [ ] Preparación de entrevistas.
 
 ---
 
